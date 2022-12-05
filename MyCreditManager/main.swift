@@ -13,6 +13,31 @@ struct Student: Equatable {
     var name: String
     var subject: [String: String]?
 }
+func getScore(score: String?) -> Double {
+    switch score {
+    case "A+":
+        return 4.5
+    case "A":
+        return 4.0
+    case "B+":
+        return 3.5
+    case "B":
+        return 3.0
+    case "C+":
+        return 2.5
+    case "C":
+        return 2.0
+    case "D+":
+        return 1.5
+    case "D":
+        return 1.0
+    case "F":
+        return 0
+    default:
+        break
+    }
+    return 0.0
+}
 var students = [Student]()
 
 while creditMangerExistence {
@@ -23,16 +48,14 @@ while creditMangerExistence {
     switch input {
     case "1":
         addStudent()
-        break
     case "2":
         deleteStudent()
-        break
     case "3":
         addSubject()
-        break
     case "4":
         deleteSubject()
-        break
+    case "5":
+        getAverage()
     case "X":
         // 종료
         creditMangerExistence = false
@@ -82,14 +105,14 @@ func addSubject() {
             print("입력이 잘못되었습니다. 학생이 없음")
             return
         }
-        guard let addSubjectStudentIndex = students.firstIndex(where:{$0.name == name}) else { return }
+        guard let studentIndex = students.firstIndex(where:{$0.name == name}) else { return }
         
-        guard false == students[addSubjectStudentIndex].subject?.isEmpty else {
-            students[addSubjectStudentIndex].subject = [:]
-            students[addSubjectStudentIndex].subject?.updateValue(subjectScore, forKey: subjectName)
+        guard false == students[studentIndex].subject?.isEmpty else {
+            students[studentIndex].subject = [:]
+            students[studentIndex].subject?.updateValue(subjectScore, forKey: subjectName)
             return
         }
-        students[addSubjectStudentIndex].subject?.updateValue(subjectScore, forKey: subjectName)
+        students[studentIndex].subject?.updateValue(subjectScore, forKey: subjectName)
     } else {
         print("입력이 잘못되었습니다. 다시 확인해주세요")
     }
@@ -110,4 +133,18 @@ func deleteSubject() {
         print("\(studentName) 학생의 \(subjectName) 과목 성적이 등록되지 않았습니다.")
     }
     students[studentIndex].subject?[subjectName] = nil
+}
+
+func getAverage() {
+    print("평점을 알고싶은 학생의 이름을 입력해주세요.")
+    guard let studentName = readLine() else { return print("입력이 잘못되었습니다. 다시 확인해 주세요.") }
+    guard let studentIndex = students.firstIndex(where:{$0.name == studentName}) else { return print("\(studentName) 학생을 찾지 못했습니다.") }
+    var average = 0.0
+    var count = 0.0
+    students[studentIndex].subject?.forEach({
+        print("\($0.key): \($0.value)")
+        average += getScore(score: $0.value)
+        count += 1.0
+    })
+    print(average / count)
 }
