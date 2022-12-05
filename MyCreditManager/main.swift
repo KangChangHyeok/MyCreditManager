@@ -31,7 +31,7 @@ while creditMangerExistence {
         addSubject()
         break
     case "4":
-        // 성적 삭제 기능 실행
+        deleteSubject()
         break
     case "X":
         // 종료
@@ -93,4 +93,21 @@ func addSubject() {
     } else {
         print("입력이 잘못되었습니다. 다시 확인해주세요")
     }
+}
+
+func deleteSubject() {
+    print("성적을 삭제할 학생의 이름, 과목 이름을 띄어쓰기로 구분하여 차례로 작성해주세요.")
+    print("입력예) Mickey Swift")
+    
+    guard let input = readLine()?.components(separatedBy: " "), input.count == 2 else {
+        return print(" 입력이 잘못되었습니다. 다시 확인해주세요") }
+    let studentName = input[0]
+    let subjectName = input[1]
+    
+    guard let studentIndex = students.firstIndex(where:{$0.name == studentName}) else { return print("\(studentName) 학생을 찾지 못했습니다.") }
+    
+    guard false == students.filter({$0.subject?[subjectName] != nil}).isEmpty else { return
+        print("\(studentName) 학생의 \(subjectName) 과목 성적이 등록되지 않았습니다.")
+    }
+    students[studentIndex].subject?[subjectName] = nil
 }
